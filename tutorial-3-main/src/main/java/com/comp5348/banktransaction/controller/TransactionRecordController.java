@@ -39,6 +39,20 @@ public class TransactionRecordController {
         return ResponseEntity.ok(transactionRecord);
     }
 
+    /**
+     * Task2: withdraw funds from an account.
+     */
+    @PostMapping("/withdraw")
+    public ResponseEntity<?> withdraw(@PathVariable Long fromCustomerId,
+                                      @PathVariable("accountId") Long fromAccountId,
+                                      @RequestBody DepositWithdrawRequest request) {
+        TransactionRecordDTO transactionRecord = transactionRecordService
+                .performTransaction(fromCustomerId, fromAccountId,
+                        null, null,
+                        request.amount, "Withdraw.");
+        return ResponseEntity.ok(transactionRecord);
+    }
+
     public static class TransferRequest {
         public long toCustomerId;
         public long toAccountId;
