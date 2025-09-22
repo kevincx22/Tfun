@@ -2,6 +2,7 @@ package com.comp5348.banktransaction.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * Entity object for transaction_record database table.
  */
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class TransactionRecord {
@@ -32,6 +34,18 @@ public class TransactionRecord {
     @ManyToOne
     @JoinColumn
     private Account fromAccount;
+
+    // fields to track merchant fee for business-account transfers
+
+    // amount of merchant fee deducted from this transaction
+    // null or 0 if no there is no fee
+    private Double feeAmount;
+
+    @ManyToOne
+    @JoinColumn
+    // the account that received the merchant fee
+    // null or 0 if no there is no fee
+    private Account feeToAccount;
 
     @Version
     private int version;

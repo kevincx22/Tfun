@@ -5,6 +5,7 @@ import com.comp5348.banktransaction.errors.InsufficientBalanceException;
 import com.comp5348.banktransaction.errors.NegativeTransferAmountException;
 import com.comp5348.banktransaction.model.Account;
 import com.comp5348.banktransaction.model.TransactionRecord;
+import com.comp5348.banktransaction.model.AccountType;
 import com.comp5348.banktransaction.repository.AccountRepository;
 import com.comp5348.banktransaction.repository.CustomerRepository;
 import com.comp5348.banktransaction.repository.TransactionRecordRepository;
@@ -58,15 +59,46 @@ public class TransactionRecordService {
             accountRepository.save(fromAccount);
         }
         Account toAccount = null;
+        // Variables to track fee info
+        Double fee = null;
+        Account feeToAccount = null;
         if (toAccountId != null) {
             toAccount = accountRepository
                     .findByIdAndCustomer(toAccountId, customerRepository.getReferenceById(toCustomerId))
                     .orElseThrow();
-            toAccount.modifyBalance(amount);
+// handle merchant fee when transferring to a business account
+// if it is BUSINESS and has a positive fee rate:
+//   - compute fee and reduce the credited amount
+//   - locate the bank's revenue account and add the fee there
+//   - credit the remaining amount to the recipient account
+            double creditAmount = amount;
+            // Apply merchant fee only for account-to-account transfers when recipient is business
+            if (fromAccount != null && toAccount.getAccountType() == AccountType.BUSINESS) {
+                Double rate = toAccount.getMerchantFeeRate();
+                if (rate != null && rate > 0.0) {
+                    fee = amount * rate;
+                    creditAmount = amount - fee;
+                    // locate revenue account
+                    feeToAccount = accountRepository.findByIsRevenueAccountTrue().orElse(null);
+                    if (feeToAccount == null) {
+                        throw new IllegalStateException("No revenue account configured");
+                    }
+                    // credit fee to revenue account
+                    feeToAccount.modifyBalance(fee);
+                    accountRepository.save(feeToAccount);
+                }
+            }
+            toAccount.modifyBalance(creditAmount);
             accountRepository.save(toAccount);
         }
 
+        // store fee info along with the transaction
+        // if there is a merchant fee, record the fee amount and the revenue account that received it
         TransactionRecord transactionRecord = new TransactionRecord(amount, toAccount, fromAccount, memo);
+        if (fee != null) {
+            transactionRecord.setFeeAmount(fee);
+            transactionRecord.setFeeToAccount(feeToAccount);
+        }
         transactionRecordRepository.save(transactionRecord);
 
         return new TransactionRecordDTO(transactionRecord);

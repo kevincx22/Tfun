@@ -21,9 +21,18 @@ public class AccountController {
     }
 
     @PostMapping
+    // createAccount now support creating both personal and business accounts
+    // Add accountType, merchantFeeRate and isRevenueAccount to handle merchant fee logic
+    // and allow marking the unique bank revenue account
     public ResponseEntity<AccountDTO> createAccount(
             @PathVariable Long customerId, @RequestBody CreateAccountRequest request) {
-        AccountDTO account = accountService.createAccount(customerId, request.accountName);
+        AccountDTO account = accountService.createAccount(
+                customerId,
+                request.accountName,
+                request.accountType,
+                request.merchantFeeRate,
+                request.isRevenueAccount
+        );
         return ResponseEntity.ok(account);
     }
 
@@ -34,8 +43,13 @@ public class AccountController {
         AccountDTO account = accountService.getAccount(customerId, accountId);
         return ResponseEntity.ok(account);
     }
-
+    // request body for creating an account
+    // holds new fields needed for personal /or business account support,
+    // merchant fee rate and if is revenue account
     public static class CreateAccountRequest {
         public String accountName;
+        public String accountType;
+        public Double merchantFeeRate;
+        public Boolean isRevenueAccount;
     }
 }

@@ -21,6 +21,14 @@ public class TransactionRecordDTO {
     private LocalDateTime time;
     private AccountDTO toAccount;
     private AccountDTO fromAccount;
+    // extra fields for merchant-fee support
+    // record how much fee was deducted and which account received it
+
+    //The fee amount deducted from the gross transfer amount. Null if there is no fee.
+    private Double feeAmount;
+
+    // The account that received the fee. Null if there is no fee.
+    private AccountDTO feeToAccount;
 
     public TransactionRecordDTO(TransactionRecord entity) {
         this.id = entity.getId();
@@ -34,6 +42,16 @@ public class TransactionRecordDTO {
         Account fromAccount = entity.getFromAccount();
         if (fromAccount != null) {
             this.fromAccount = new AccountDTO(fromAccount);
+        }
+
+        // set fee info if this transaction involved a merchant fee.
+        // copy the fee amount and the revenue account that received it
+        if (entity.getFeeAmount() != null) {
+            this.feeAmount = entity.getFeeAmount();
+        }
+        Account feeTo = entity.getFeeToAccount();
+        if (feeTo != null) {
+            this.feeToAccount = new AccountDTO(feeTo);
         }
     }
 }

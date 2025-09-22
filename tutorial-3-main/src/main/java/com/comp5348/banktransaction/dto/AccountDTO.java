@@ -22,6 +22,11 @@ public class AccountDTO {
     private String name;
     private Double balance;
 
+    // extra fields to describe the new account features
+    private String accountType;
+    private Double merchantFeeRate;
+    private Boolean isRevenueAccount;
+
     /**
      * The set of transaction records associated with the account.
      */
@@ -47,6 +52,14 @@ public class AccountDTO {
         this.id = accountEntity.getId();
         this.balance = accountEntity.getBalance();
         this.name = accountEntity.getName();
+
+        // copy new account fields into the DTO
+        // include type, merchant fee rate and if it's revenue account
+        if (accountEntity.getAccountType() != null) {
+            this.accountType = accountEntity.getAccountType().name();
+        }
+        this.merchantFeeRate = accountEntity.getMerchantFeeRate();
+        this.isRevenueAccount = accountEntity.getIsRevenueAccount();
 
         if (includeRelatedEntities) {
             this.customer = new CustomerDTO(accountEntity.getCustomer());

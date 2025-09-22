@@ -13,4 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     // Spring Data JPA will automatically generate the implementation.
     // Find more about it at https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
     Optional<Account> findByIdAndCustomer(long id, Customer customer);
+
+    //helper to locate the bank's revenue account
+    Optional<Account> findByIsRevenueAccountTrue();
 }

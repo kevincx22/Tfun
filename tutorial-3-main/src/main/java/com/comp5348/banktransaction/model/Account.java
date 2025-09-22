@@ -2,6 +2,7 @@ package com.comp5348.banktransaction.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Collection;
  * Entity object for account database table.
  */
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Account {
@@ -30,6 +32,23 @@ public class Account {
 
     @Column(nullable = false)
     private Double balance = 0.0;
+
+    //new fields to support business accounts and merchant fee handling
+    // account type: PERSONAL or BUSINESS
+    // business accounts can have merchant fees
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountType accountType = AccountType.PERSONAL;
+
+    // merchant fee rate for business accounts (e.g. 0.02 = 2%)
+    // zero for personal accounts
+    @Column(nullable = false)
+    private Double merchantFeeRate = 0.0;
+
+    // mark the bank's revenue account that collect merchant fees
+    // there should be only one such account in the system
+    @Column(nullable = false)
+    private Boolean isRevenueAccount = false;
 
     @OneToMany(mappedBy = "fromAccount")
     private Collection<TransactionRecord> fromTransactionRecords;
