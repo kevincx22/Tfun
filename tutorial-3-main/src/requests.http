@@ -1,0 +1,83 @@
+### 0) Health (optional)
+GET http://localhost:8080/actuator/health
+
+### 1) Create customers (note returned IDs, suppose Alice=1, Bob=2, Bank=3)
+POST http://localhost:8080/api/customer
+Content-Type: application/json
+
+{ "firstName": "Alice", "lastName": "Lee" }
+
+###
+POST http://localhost:8080/api/customer
+Content-Type: application/json
+
+{ "firstName": "Bob", "lastName": "Chan" }
+
+###
+POST http://localhost:8080/api/customer
+Content-Type: application/json
+
+{ "firstName": "Bank", "lastName": "Revenue" }
+
+### 2) Create accounts (replace {cid} with real customer IDs)
+# 2.1 Alice personal account
+POST http://localhost:8080/api/customer/1/account
+Content-Type: application/json
+
+{
+  "accountName": "Alice-Personal",
+  "accountType": "PERSONAL"
+}
+
+###
+# 2.2 Bob business account with 2% fee
+POST http://localhost:8080/api/customer/2/account
+Content-Type: application/json
+
+{
+  "accountName": "Bob-Business",
+  "accountType": "BUSINESS",
+  "merchantFeeRate": 0.02
+}
+
+###
+# 2.3 Bank revenue account (must be unique)
+POST http://localhost:8080/api/customer/3/account
+Content-Type: application/json
+
+{
+  "accountName": "Revenue",
+  "accountType": "BUSINESS",
+  "isRevenueAccount": true
+}
+
+### 3) Deposit 100 into Alice's personal account (replace IDs accordingly)
+POST http://localhost:8080/api/customer/1/account/1/transaction_record/deposit
+Content-Type: application/json
+
+{ "amount": 100 }
+
+### 4) Transfer 100 from Alice (acc 1) to Bob (acc 2) — should apply 2% fee
+POST http://localhost:8080/api/customer/1/account/1/transaction_record/transfer
+Content-Type: application/json
+
+{
+  "toCustomerId": 2,
+  "toAccountId": 2,
+  "amount": 100
+}
+
+### 5) Check balances & history (replace IDs if different)
+GET http://localhost:8080/api/customer/1/account/1
+
+###
+GET http://localhost:8080/api/customer/2/account/2
+
+###
+GET http://localhost:8080/api/customer/3/account/3
+
+### 6) Edge cases (optional)
+# 6.1 personal -> personal (no fee) - create another personal acc if needed and test
+# 6.2 business -> personal (your spec usually says no fee)
+# 6.3 zero rate business acc (fee=0)
+# 6.4 try transfer > balance (should fail with InsufficientBalance)
