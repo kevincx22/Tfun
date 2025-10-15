@@ -1,0 +1,16 @@
+/* src/index.css */
+
+/* 引入你选择的字体 (如果还没加的话) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+body {
+    margin: 0; /* 移除 body 的默认外边距 */
+    font-family: 'Inter', sans-serif; /* 设置全局字体 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保 #root 能占满整个屏幕高度 */
+#root {
+    min-height: 100vh;
+}

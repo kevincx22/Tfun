@@ -1,0 +1,65 @@
+.login-container {
+    padding: 40px; /* 内边距：在内容和边框之间留出 40px 的空间，让盒子看起来不拥挤 */
+    background-color: white;
+    border-radius: 8px; /* 边框圆角：让盒子的四个角变得圆润，数值越大越圆 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);  /* 盒子阴影：给盒子添加一个立体感的阴影效果 */
+    width: 360px;
+    text-align: center; /* 文本对齐：让盒子内部的文本（比如标题）居中显示 */
+}
+
+.login-container h2 { /* 这个选择器选中了 .login-container 内部的 h2 标签 (也就是 "Welcome!" 那个标题) */
+    margin-bottom: 24px;  /* 外边距-底部：在标题下方留出 24px 的空间，和下面的表单拉开距离 */
+    color: #333;
+}
+
+/* 选中 .login-form 内部所有 class="input-group" 的元素 */
+/* (input-group 是我们给每个“标签+输入框”组合起的名字) */
+.login-form .input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* 选中 .input-group 内部的 label 标签 (也就是 "Username" 和 "Password" 文本) */
+.input-group label {
+    display: block; /* 显示模式：设置为块级元素，这样标签就会自己占一行，跑到输入框的上面 */
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* 选中 .input-group 内部的 input 标签 (也就是输入框本身) */
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* 保证 padding 不会撑大宽度 */
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #000000;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.login-button:hover {  /* 这是一个“伪类”，表示当鼠标悬浮在 .login-button 上时的样式 */
+    background-color: #333333;
+}
+
+/* 选中 class="form-footer" 的元素 (底部“忘记密码”和“注册”的容器) */
+.form-footer {
+    display: flex;
+    justify-content: space-between; /* 主轴对齐方式：让内部的元素两端对齐，一个靠最左，一个靠最右 */
+    font-size: 14px;
+}
+/* 选中 .form-footer 内部的 a 标签 (也就是注册链接) */
+.form-footer a {
+    color: #000000;
+    text-decoration: none;
+}
